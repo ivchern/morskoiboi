@@ -7,14 +7,20 @@ public class Main {
         System.out.println("Hello world!");
 
         Field field = new Field();
-        AutoSetShips se = new AutoSetShips();
-
         field.BuildGrid();
+
+
+        AutoSetShips se = new AutoSetShips( field.fieldsMap, field.valuesCells);
+        se.run();
+        field.setFieldsMap(se.getFieldsMap());
         field.ViewField();
-        field.fieldsMap = se.setValueCell(field.fieldsMap, field.valuesCells);
-        field.ViewField();
+
+
 
     }
+
+
+
 
 
 }

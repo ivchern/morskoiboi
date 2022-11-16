@@ -7,6 +7,14 @@ import java.util.stream.IntStream;
 
 
 public class Field {
+    public void setFieldsMap(Map<Integer, String> fieldsMap) {
+        this.fieldsMap = fieldsMap;
+    }
+
+    public Map<Integer, String> getFieldsMap() {
+        return fieldsMap;
+    }
+
     public Map<Integer, String> fieldsMap = new LinkedHashMap<Integer, String>();
     //ЭТО типо мапа которая дает ключ от другой мапы :facepalm
     public Map<String, Integer> valuesCells = new HashMap<String, Integer>();
@@ -14,14 +22,14 @@ public class Field {
     public void BuildGrid(){
         final String[] horizontalIdentification = { "a", "b", "c", "d", "f", "e", "j",
                 "k", "l", "m"};
-        final int[] verticalIdentification = IntStream.rangeClosed(1, 10).toArray();
+        final int[] verticalIdentification = IntStream.rangeClosed(1, 12).toArray();
 
         //22 горизонтальных символа, 22 вертикальных поля=>
         //3 справа занято, 1 сверху занят, 1 снизу занят, остальное поле /2
         int k = 0;
         int countElem = 0;
         while (k < 22) {
-            for (int i = 0; i < 22; i++) {
+            for (int i = 0; i < 23; i++) {
                 countElem++;
                 if(k == 0 ) {
                     SetHeaderLine(i, horizontalIdentification, countElem);
@@ -31,7 +39,7 @@ public class Field {
                     countElem = SetVerticalHeaderItem(k, countElem, verticalIdentification);
                 }  else if( i % 2 != 0 ){
                     fieldsMap.put(countElem, "|");
-                } else if( i % 2 == 0 && i != 20 ){
+                } else if( i % 2 == 0 && i != 22 ){
                     SetFieldValue(i,k,countElem,verticalIdentification, horizontalIdentification);
                 }
             }
@@ -53,7 +61,8 @@ public class Field {
             fieldsMap.put(countElem, " ");
         }else{
             if( index_vertical % 2 != 0 ) {
-                String value = horizontalIdentification[(index_vertical-3)/2];
+                System.out.println(horizontalIdentification[(index_vertical-2)/2] + " " + index_vertical);
+                String value = horizontalIdentification[(index_vertical-2)/2];
                 fieldsMap.put(countElem, value);
             }else{
                 fieldsMap.put(countElem, " ");

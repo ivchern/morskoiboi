@@ -1,85 +1,129 @@
 package View;
 
 import java.util.*;
+import Ships.SeparationOfCoordinates;
+import Ships.CellShipHelper;
 
 public class AutoSetShips {
-
-    String[] allCells = new String[400]; //todo: переписать на эррей лист
-
-    public void SearchFreeShip(Map<String, Integer> valuesCells){
-        int i = 0;
-        for(Map.Entry<String, Integer> entry : valuesCells.entrySet()) {
-            String key = entry.getValue().toString();
-            allCells[i] = key; //todo: переписать на эррей лист
-        }
-    }
-
-   /*
-   public void set1cellShipp(Map<String, Integer> valuesCells, Map<Integer, String> fieldsMap ){
-
-        Random rn = new Random();
-        int Ship = rn.nextInt(allCells.length);
-
-
-
-
-
-        //Ищем все ячейки
-        //Раскладываем цифру
-        //а1
-        int columnNum;
-        String headerLetter;
-        if(allCells[Ship].length() == 2 ) {
-            columnNum = Integer.getInteger(allCells[Ship].substring(1, 2));
-        }else {
-            headerLetter = allCells[Ship].substring(1,1);
-        }
-        //ищем ячейки вокруг a1
-        //Скрываем а2, b1
-
-        //ищем ячейки вокруг a2
-        //Скрываем а1, a3, b1, b2, b3
-
-        //ищем ячейки вокруг d2
-        //Скрываем c1 d1 f1 // c2 f2 // c3 d3 f3
-
-        //ищем ячейки l10
-        //Скрываем k10 // k9 l9
-
-        // ищем буквы -> скрытия их 3 или 2 в пограничном случае.
-        // ищем индекс буквы, получаем индекс буквы, получаем значения по - 1 и +1
-        // ищем строки, получаем индекс цифры, получаем значения по -1 и + 1
-        // конкатенируем
-        // добавляем в эррей лист, удаляем из array list со всеми эллементами
-
-
-        ArrayList<String> arrays = new ArrayList<String>();
-
-        //   ------------------------------
-        // Устанавливаем коробли по нарастающи
-        // Установка коробля с 2 и более ячейками
-        // Получаем длинну коробля
-        // Выбираем ячейку
-        // Выбираем рандомно лево или право, верх или низ
-        // Проверяем последующие ячейки на длинну коробля
-
-
-        //    -----------------------------
-        // Проверка убит ли корабль
-        // Вокруг только пустые ячейки, а в этой содержалось значение коробля
-
-
-        }
-
-    }
-    */
-
-public Map<Integer, String> setValueCell(Map<Integer, String> fieldsMap, Map<String, Integer> valuesCells  ) {
-        int cell = valuesCells.get("a1").intValue();
-        fieldsMap.replace(cell, "X");
+    public Map<Integer, String> getFieldsMap() {
         return fieldsMap;
     }
 
+    private Map<Integer, String> fieldsMap;
+    private Map<String, Integer> valuesCells;
+    private ArrayList<String> haveCell= new ArrayList<>();
+
+    public AutoSetShips(Map<Integer, String> fieldsMap, Map<String, Integer> valuesCells) {
+        this.fieldsMap = fieldsMap;
+        this.valuesCells = valuesCells;
+    }
+
+    ArrayList<String> allFreeCells = new ArrayList<>();
+
+    public void toArrayCellField(){
+        for(Map.Entry<String, Integer> entry : valuesCells.entrySet()) {
+            allFreeCells.add(entry.getKey());
+        }
+        Collections.shuffle(allFreeCells);
+    }
 
 
+    public void Direction(String headerLetter, int  columnNum, int lenghtShip){ //todo: поменять нейминг
+        Random rn = new Random();
+        boolean isLetter = rn.nextBoolean();
+        boolean isRight = rn.nextBoolean();
+        boolean isAbove = isRight;
+        boolean isHaveCell;
+
+        String[] allLetter;
+
+        if(isLetter) {
+            isHaveCell = CellShipHelper.CheckOverflowShips(lenghtShip, headerLetter, isRight);
+            if(isHaveCell){
+                allLetter = CellShipHelper.NextCell(lenghtShip, headerLetter, isRight);
+            }else {
+                newShip(lenghtShip);
+                return;
+            }
+        }else {
+            isHaveCell = CellShipHelper.CheckOverflowShips(lenghtShip, columnNum, isAbove);
+            if(isHaveCell) {
+                allLetter = CellShipHelper.NextCell(lenghtShip, columnNum, isAbove);
+            }else {
+                newShip(lenghtShip);
+                return;
+            }
+        }
+        ArrayList<String> shipsCell= new ArrayList<>();
+        for (int i = 0; i < lenghtShip; i++) {
+            if(isLetter == true) {
+                shipsCell.add(allLetter[i] + columnNum);
+            }else {
+                shipsCell.add(headerLetter + allLetter[i]);
+            }
+        }
+        if (!CellsCheck(shipsCell)){
+            newShip(lenghtShip);
+            return;
+        }
+        haveCell.addAll(shipsCell);
+        System.out.println(shipsCell);
+        for (int i = 0; i < shipsCell.size(); i++) {
+            markCell(shipsCell.get(i), "X");
+        }
+    }
+
+    private boolean CellsCheck(ArrayList<String> shipsCells) {
+        for (int i = 0; i < shipsCells.size(); i++) {
+            String[] cellAround = CellShipHelper.CellAround(
+                    SeparationOfCoordinates.ColumnNum(shipsCells.get(i)),
+                    SeparationOfCoordinates.HeaderLetter(shipsCells.get(i)));
+            for (int j = 0; j < cellAround.length; j++) {
+                if (!allFreeCells.contains(cellAround[j])){
+                    return false;
+                }
+            }
+        }
+        allFreeCells.removeAll(shipsCells);
+        return true;
+    }
+
+    public void run(){
+        toArrayCellField();
+        newShip(4);
+        newShip(3);
+        newShip(3);
+        newShip(2);
+        newShip(2);
+        newShip(2);
+        newShip(1);
+        newShip(1);
+        newShip(1);
+        newShip(1);
+    }
+
+    int indexMassive = 0;
+    public void newShip(int lenghtShip){
+        String shipStart = allFreeCells.get(indexMassive);
+        System.out.println(shipStart);
+        indexMassive++;
+        String verticalCoordinate = SeparationOfCoordinates.HeaderLetter(shipStart);
+        int horizontalCoordinate = SeparationOfCoordinates.ColumnNum(shipStart);
+        Direction(verticalCoordinate, horizontalCoordinate, lenghtShip);
+        indexMassive = 0;
+        System.out.println();
+    }
+
+
+    //mark = X - пробите, * - корабль
+    public void markCell(String cell, String mark) {
+        try {
+            int cellNum = valuesCells.get(cell).intValue();
+            fieldsMap.replace(cellNum, mark);
+        }
+        catch ( RuntimeException runtimeException){
+            System.out.println(cell);
+            System.out.println(valuesCells.toString());
+        }
+    }
 }
