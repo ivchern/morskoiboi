@@ -16,7 +16,6 @@ public class Field {
     }
 
     public Map<Integer, String> fieldsMap = new LinkedHashMap<Integer, String>();
-    //ЭТО типо мапа которая дает ключ от другой мапы :facepalm
     public Map<String, Integer> valuesCells = new HashMap<String, Integer>();
 
     public void BuildGrid(){
@@ -24,7 +23,7 @@ public class Field {
                 "k", "l", "m"};
         final int[] verticalIdentification = IntStream.rangeClosed(1, 12).toArray();
 
-        //22 горизонтальных символа, 22 вертикальных поля=>
+        //22 горизонтальных символа, 23 вертикальных поля=>
         //3 справа занято, 1 сверху занят, 1 снизу занят, остальное поле /2
         int k = 0;
         int countElem = 0;

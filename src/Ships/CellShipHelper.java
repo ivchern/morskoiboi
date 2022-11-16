@@ -7,9 +7,9 @@ public class CellShipHelper {
     final private static ArrayList<String> horizontalIdentification =  new ArrayList<>(Arrays.asList("a", "b",
             "c", "d", "f", "e", "j", "k", "l", "m"));
 
-    public static String[] NextCell(int lenghtShip, String pos, boolean isRight){
+    public static String[] NextCells(int lenghtShip, String pos, boolean isRight){
         int posLetter = horizontalIdentification.indexOf(pos);
-        ArrayList<String> allLetter = new ArrayList<>();                            //todo: перееделать на arraylist
+        ArrayList<String> allLetter = new ArrayList<>();                          
         for (int i = 0; i < lenghtShip; i++) {
             if(isRight) {
                 allLetter.add(horizontalIdentification.get(posLetter - i));
@@ -20,8 +20,8 @@ public class CellShipHelper {
         return allLetter.toArray(new String[0]);
     }
 
-    public static String[] NextCell(int lenghtShip, int pos, boolean isAbove){
-        ArrayList<String> allHeaderLines = new ArrayList<>();                            //
+    public static String[] NextCells(int lenghtShip, int pos, boolean isAbove){
+        ArrayList<String> allHeaderLines = new ArrayList<>();
         for (int i = 0; i < lenghtShip; i++) {
             if(isAbove == true) {
                 allHeaderLines.add(Integer.toString(pos + i));
