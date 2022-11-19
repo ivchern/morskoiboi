@@ -27,14 +27,15 @@ public class HitChecker {
     private View.MarkCells mark;
     private ArrayList<String> oldVal= new ArrayList<>();
 
-    public void checkInputString(String inputString){
+    public boolean checkInputString(String inputString){
         if(allFreeCells.size() == 0){ toArrayCellField(); }
         if(allFreeCells.contains(inputString)){
             allFreeCells.remove(inputString);
-            checkMassiveValue(inputString);
+            return checkMassiveValue(inputString);
         }
         else{
             System.out.println("Попробуйте другую ячейку");
+            return false;
         }
     }
     public boolean checkMassiveValue(String fieldCell){
